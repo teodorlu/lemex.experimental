@@ -117,6 +117,8 @@
 
 (orgmode-reader "example/simple-made-easy/index.org")
 
+;; ## links that support moving documents
+
 (defn metadata-index
   "Indexes all metadata on UUID"
   [{:keys [root]}]
