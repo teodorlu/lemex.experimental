@@ -6,10 +6,12 @@
   :nextjournal.clerk/visibility {:code :hide :result :hide}}
 (ns teodorlu.lemex.experimental.api
   (:require
-   [clojure.edn :as edn]
-   [babashka.process :as process]
    [babashka.fs :as fs]
-   [clojure.data.json :as json]))
+   [babashka.process :as process]
+   [clojure.data.json :as json]
+   [clojure.edn :as edn]
+   [clojure.string :as str]
+   [clojure.walk]))
 
 ;; ## lemex is plain text, plain data and some code
 ;;
@@ -97,6 +99,7 @@
         (json/read-str (:out process-output) :key-fn keyword)))))
 
 (markdown-reader "example/babashka/index.md")
+(markdown-reader "example/borkdude/index.md")
 
 (defn orgmode-reader [path]
   (when (re-matches #".*org" path)
@@ -106,3 +109,32 @@
         (json/read-str (:out process-output) :key-fn keyword)))))
 
 (orgmode-reader "example/simple-made-easy/index.org")
+
+(defn metadata-index
+  "Indexes all metadata on UUID"
+  [{:keys [root]}]
+  (let [documents (docs {:root root})]
+    (into (sorted-map)
+          (for [d (filter :uuid documents)]
+            [(:uuid d) (dissoc d :uuid)]))))
+
+(metadata-index {:root "example/"})
+
+(defn resolve-links [pandocjson index]
+  (let [uuid->slug (fn [uuid] (:slug (get index uuid)))
+        pandoc-link? (fn [pandoc] (= "Link" (:t pandoc)))
+        pandoc-link-target-path [:c 2 0]
+        pandoc-link-target (fn [link] (get-in link pandoc-link-target-path))
+        replace-link (fn [x]
+                       (if (pandoc-link? x)
+                         (let [link x
+                               uuid (last (str/split (pandoc-link-target link) #":"))
+                               slug (uuid->slug uuid)]
+                           (if slug
+                             (assoc-in link pandoc-link-target-path (str "../" slug "/"))
+                             link))
+                         x))]
+    (update pandocjson :blocks (fn [blocks] (clojure.walk/postwalk replace-link blocks)))))
+
+(resolve-links (markdown-reader "example/borkdude/index.md")
+               (metadata-index {:root "example/"}))
