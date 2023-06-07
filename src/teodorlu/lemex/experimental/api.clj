@@ -41,7 +41,14 @@
 ;; Org-mode (`index.org`) are provided.
 
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
-(defn ^:private requiring-resolve-orelse [sym orelse]
+(defn ^:private requiring-resolve-orelse
+  [sym orelse]
+  ;; Lemex supports JVM Clojure and Babashka.
+  ;;
+  ;; Clerk is used to develop Lemex. But we don't want to bundle Clerk in shell
+  ;; scripts. So we use this variant of requiring-resolve that allows a
+  ;; fallback. We'll use this to show values with Clerk when Clerk is available,
+  ;; and do nothing when Clerk is not loaded.
   (try
     (requiring-resolve sym)
     (catch Exception _ orelse)))
