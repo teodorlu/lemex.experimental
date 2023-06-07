@@ -4,4 +4,4 @@
         org.babashka/cli {:mvn/version "0.7.51"}}
  :aliases
  {:dev {:extra-paths ["dev"]
-        :deps {io.github.nextjournal/clerk {:mvn/version "0.13.842"}}}}}
+        :extra-deps {io.github.nextjournal/clerk {:mvn/version "0.13.842"}}}}}
