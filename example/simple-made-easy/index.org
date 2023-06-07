@@ -2,4 +2,4 @@
 
 https://www.youtube.com/watch?v=LKtk3HCgTa8
 
-A talk by Rich Hickey
+A talk by [[lemex:e7078515-14e9-4a68-a932-b156abe8b33f][Rich Hickey]].
