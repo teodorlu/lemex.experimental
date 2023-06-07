@@ -8,7 +8,8 @@
   (:require
    [clojure.edn :as edn]
    [babashka.process :as process]
-   [babashka.fs :as fs]))
+   [babashka.fs :as fs]
+   [clojure.data.json :as json]))
 
 ;; ## lemex is plain text, plain data and some code
 ;;
@@ -75,3 +76,29 @@
          (map expand-meta))))
 
 (docs {:root "example/"})
+
+;; ## lemex readers: into Pandoc
+;;
+;; a lemex reader takes a file path.
+;; If the file path is something the reader can convert to Pandoc data, it returns that data.
+;; Otherwise, it returns nil.
+;;
+;; In other words, a lemex reader is a function from a file path to pandoc data or nil.
+
+(defn markdown-reader [path]
+  (when (re-matches #".*md" path)
+    (let [path (-> path fs/absolutize fs/canonicalize)
+          process-output (process/shell {:out :string} "pandoc" "-i" (str path) "-t" "json")]
+      (when (= 0 (:exit process-output))
+        (json/read-str (:out process-output) :key-fn keyword)))))
+
+(markdown-reader "example/babashka/index.md")
+
+(defn orgmode-reader [path]
+  (when (re-matches #".*org" path)
+    (let [path (-> path fs/absolutize fs/canonicalize)
+          process-output (process/shell {:out :string} "pandoc" "-i" (str path) "-t" "json")]
+      (when (= 0 (:exit process-output))
+        (json/read-str (:out process-output) :key-fn keyword)))))
+
+(orgmode-reader "example/simple-made-easy/index.org")

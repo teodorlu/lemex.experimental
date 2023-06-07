@@ -1,0 +1,5 @@
+#+title: Simple Made Easy
+
+https://www.youtube.com/watch?v=LKtk3HCgTa8
+
+A talk by Rich Hickey
