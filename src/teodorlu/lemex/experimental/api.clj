@@ -118,6 +118,7 @@
           (for [d (filter :uuid documents)]
             [(:uuid d) (dissoc d :uuid)]))))
 
+{:nextjournal.clerk/visibility {:code :show :result :show}}
 (metadata-index {:root "example/"})
 
 (defn resolve-links [pandocjson index]
