@@ -32,7 +32,8 @@
 ;;         └── index.md
 ;;
 ;; Each document is a folder. There is no nesting. Each document folder contains
-;; a `doc.edn` (metadata) and an `index.md` (the doc content).
+;; a `doc.edn` (metadata) and a document. Readers for Markdown (`index.md`) and
+;; Org-mode (`index.org`) are provided.
 
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 (defn ^:private requiring-resolve-orelse [sym orelse]
