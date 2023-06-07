@@ -62,7 +62,7 @@
 (table
  {:head ["term" "definition"]
   :rows [[:slug    "Identifies the doc, is used in URLs. Unique. May change. Follows [A-Za-z0-9-]+."]
-         [:uuid    "Identifies the doc. Is used in internal references. Immutable, unique."]
+         [:uuid    "Identifies the doc, is used in internal references. Immutable, unique."]
          [:title   "Identifies the doc for humans. Normal prose. Uniqueness recommended."]
          [:created "Created date. Example: 2023-06-11."]]})
 
