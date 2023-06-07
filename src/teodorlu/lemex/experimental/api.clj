@@ -2,13 +2,15 @@
 ;;
 ;; A toolkit for creating your own little memex.
 
+^{:nextjournal.clerk/toc true
+  :nextjournal.clerk/visibility {:code :hide :result :hide}}
 (ns teodorlu.lemex.experimental.api
   (:require
    [clojure.edn :as edn]
    [babashka.process :as process]
    [babashka.fs :as fs]))
 
-;; ## lemex components
+;; ## lemex is plain text, plain data and some code
 ;;
 ;; lemex is a toolbox for building your own little memex out of simple pieces:
 ;;
@@ -37,6 +39,7 @@
     (requiring-resolve sym)
     (catch Exception _ orelse)))
 
+^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 (def table (requiring-resolve-orelse 'nextjournal.clerk/table (constantly nil)))
 
 ;; ## lemex vocabulary
@@ -48,6 +51,8 @@
          [:uuid    "Identifies the doc. Is used in internal references. Immutable, unique."]
          [:title   "Identifies the doc for humans. Normal prose. Uniqueness recommended."]
          [:created "Created date. Example: 2023-06-11."]]})
+
+;; ## listing documents
 
 (defn ^:private expand-meta [{:keys [root slug]}]
   (assert root) (assert slug)
