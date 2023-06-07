@@ -1,6 +1,10 @@
 ;; # lemex CLI
 ;;
-;; A command line interface for creating your own little memex.
+;; An example CLI for your own little memex.
 
-(ns teodorlu.lemex.experimental.cli)
+(ns teodorlu.lemex.experimental.cli
+  (:require
+   [teodorlu.lemex.experimental.api :as lemex]
+   [babashka.cli :as cli]))
 
+(cli/parse-opts ["--name" "teodor"])
