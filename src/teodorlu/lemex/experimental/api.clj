@@ -1,6 +1,11 @@
 ;; # lemex API
 ;;
-;; An application programming interface for creating your own little memex.
+;; A toolkit for creating your own little memex.
 
-(ns teodorlu.lemex.experimental.api)
+(ns teodorlu.lemex.experimental.api
+  (:require
+   [clojure.edn :as edn]
+   [babashka.process :as process]
+   [babashka.fs :as fs]))
 
+;;
