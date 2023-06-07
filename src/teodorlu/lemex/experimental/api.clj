@@ -27,9 +27,12 @@
 ;;     ├── babashka
 ;;     │   ├── doc.edn
 ;;     │   └── index.md
-;;     └── memex
+;;     ├── memex
+;;     │   ├── doc.edn
+;;     │   └── index.md
+;;     └── simple-made-easy
 ;;         ├── doc.edn
-;;         └── index.md
+;;         └── index.org
 ;;
 ;; Each document is a folder. There is no nesting. Each document folder contains
 ;; a `doc.edn` (metadata) and a document. Readers for Markdown (`index.md`) and
