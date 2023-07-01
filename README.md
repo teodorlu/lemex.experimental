@@ -4,7 +4,7 @@ Stability: experimental.
 
 I'm currently working on this toolkit while I'm working on my memexes (one public, more private).
 If you want to help explore, then great! Get in touch.
-If you're looking for something production ready, consider [Org-mode], [Org-roam], [Logseq], [Obsidian] or [TiddlyWiki]
+If you're looking for something production ready, consider [Org-mode], [Org-roam], [Logseq], [Obsidian] or [TiddlyWiki].
 
 [Org-mode]: https://orgmode.org/
 [Org-roam]: https://www.orgroam.com/
