@@ -55,7 +55,7 @@
 (defn
   ^{:experimental true
     :why-experimental?
-    "Because I don't really want to empathise slugs, I want
+    "Because I don't really want to emphasize slugs, I want
      uuids. But I don't know how to treat indexes."}
   update-meta!* [lemex slug f & args]
   (when-let [meta (expand-meta lemex slug)]
