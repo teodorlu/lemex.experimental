@@ -1,4 +1,4 @@
-# `lemex.experimental`: A toolkit for building your own little memex with Babashka and Pandoc
+# `lemex.experimental`: A toolkit for building your own little memex with Babashka
 
 Stability: experimental.
 
