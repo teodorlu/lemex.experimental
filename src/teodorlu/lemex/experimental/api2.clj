@@ -1,7 +1,8 @@
 (ns teodorlu.lemex.experimental.api2
   (:require
    [babashka.fs :as fs]
-   [clojure.edn :as edn]))
+   [clojure.edn :as edn]
+   [clojure.pprint]))
 
 ;; I just made api2.
 ;; Why?
@@ -47,6 +48,20 @@
        (map fs/file-name)
        (map (fn [slug] (expand-meta lemex slug)))))
 
+(defn ^:private pprint-str [form]
+  (binding [*print-namespace-maps* false]
+    (with-out-str (clojure.pprint/pprint form))))
+
+(defn
+  ^{:experimental true
+    :why-experimental?
+    "Because I don't really want to empathise slugs, I want
+     uuids. But I don't know how to treat indexes."}
+  update-meta!* [lemex slug f & args]
+  (when-let [meta (expand-meta lemex slug)]
+    (spit (str (:root lemex) "/" slug "/" (:meta-edn-file lemex))
+          (pprint-str (dissoc (apply f meta args) :slug)))))
+
 ;; -----------------------------------------------------------------------------
 
 (comment
@@ -65,6 +80,11 @@
   (let [example (lemex {:root "example/"
                         :meta-edn-file "doc.edn"})]
     (docs example))
+
+  (let [example (lemex {:root "example/"
+                        :meta-edn-file "doc.edn"})]
+    (update-meta!* example "rich-hickey" assoc :awesome true)
+    )
 
   (let [example (lemex {:root (fs/expand-home "~/dev/iterate/unicad-discovery/oggpow/")
                         :meta-edn-file "meta.edn"})]
