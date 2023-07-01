@@ -35,6 +35,20 @@
   (validate! opts)
   (conform opts))
 
+(defn ^:private expand-meta [lemex slug]
+  (validate! lemex)
+  (when (fs/exists? (fs/file (:root lemex) slug (:meta-edn-file lemex)))
+    (assoc (edn/read-string (slurp (fs/file (:root lemex) slug (:meta-edn-file lemex))))
+           :slug slug)))
+
+(defn docs [lemex]
+  (->> (fs/glob (:root lemex) (:meta-edn-glob lemex))
+       (map fs/parent)
+       (map fs/file-name)
+       (map (fn [slug] (expand-meta lemex slug)))))
+
+;; -----------------------------------------------------------------------------
+
 (comment
   ;; normal call:
   (lemex {:root "example/"
@@ -46,23 +60,15 @@
 
   (lemex {:root "example/"
           :meta-edn-file "doc.edn"
-          :meta-edn-glob "**/doc.edn"}))
+          :meta-edn-glob "**/doc.edn"})
 
-(defn ^:private expand-meta [lemex slug]
-  (validate! lemex)
-  (when (fs/exists? (fs/file (:root lemex) slug "doc.edn"))
-    (assoc (edn/read-string (slurp (fs/file (:root lemex) slug "doc.edn")))
-           :slug slug)))
-
-(defn docs [lemex]
-  (->> (fs/glob (:root lemex) (:meta-edn-glob lemex))
-       (map fs/parent)
-       (map fs/file-name)
-       (map (fn [slug] (expand-meta lemex slug)))))
-
-(comment
   (let [example (lemex {:root "example/"
                         :meta-edn-file "doc.edn"})]
     (docs example))
 
+  (let [example (lemex {:root (fs/expand-home "~/dev/iterate/unicad-discovery/oggpow/")
+                        :meta-edn-file "meta.edn"})]
+    (docs example))
+
+  ,,,
   )
