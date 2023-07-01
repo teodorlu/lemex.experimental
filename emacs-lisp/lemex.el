@@ -30,5 +30,10 @@
   (interactive)
   (teod-play-page-insert-link))
 
+(defun lemex-create ()
+  "Create a new lemex document"
+  (interactive)
+  (teod-play-page-create))
+
 (provide 'lemex)
 ;;; lemex.el ends here
