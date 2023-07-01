@@ -90,5 +90,16 @@
                         :meta-edn-file "meta.edn"})]
     (docs example))
 
+  ;; Example: batch add UUID to metadata for documents without an uuid
+  (let [example (lemex {:root (fs/expand-home "~/dev/iterate/unicad-discovery/oggpow/")
+                        :meta-edn-file "meta.edn"})]
+    (doseq [d (docs example)]
+      (update-meta!* example
+                     (:slug d)
+                     (fn [d]
+                       (let [uuid (or (:uuid d)
+                                      (str (random-uuid)))]
+                         (assoc d :uuid uuid))))))
+
   ,,,
   )
