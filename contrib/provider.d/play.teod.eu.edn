@@ -1,0 +1,18 @@
+;; https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/play.teod.eu.edn
+{:fn
+ (fn []
+   (let [baseurl "https://play.teod.eu"
+         index-url (str baseurl "/index/big.edn")
+         page-url (fn [slug]
+                    (str baseurl "/" slug "/"))]
+     (->>
+      (edn/read-string (slurp index-url))
+      (filter (fn [page]
+                (and
+                 (= :en (:lang page))
+                 (= :ready-for-comments
+                    (:readiness page)))))
+      (map (fn [page] (select-keys page [:title :slug])))
+      (map (fn [{:keys [title slug]}]
+             {:title title
+              :url (page-url slug)})))))}

@@ -63,6 +63,56 @@
                                          {:title title :url url})))})]
   (provider-links example-provider))
 
+(let [baseurl "https://play.teod.eu"
+      index-url (str baseurl "/index/big.edn")
+      page-url (fn [slug]
+                 (str baseurl "/" slug "/"))]
+  (->>
+   (edn/read-string (slurp index-url))
+   (filter (fn [page]
+             (and
+              (= :en (:lang page))
+              (= :ready-for-comments
+                 (:readiness page)))))
+   (map (fn [page] (select-keys page [:title :slug])))
+   (map (fn [{:keys [title slug]}]
+          {:title title
+           :url (page-url slug)}))))
+
+(let [example-provider (quote {:fn
+                               (fn []
+                                 (let [baseurl "https://play.teod.eu"
+                                       index-url (str baseurl "/index/big.edn")
+                                       page-url (fn [slug]
+                                                  (str baseurl "/" slug "/"))]
+                                   (->>
+                                    (edn/read-string (slurp index-url))
+                                    (filter (fn [page]
+                                              (and
+                                               (= :en (:lang page))
+                                               (= :ready-for-comments
+                                                  (:readiness page)))))
+                                    (map (fn [page] (select-keys page [:title :slug])))
+                                    (map (fn [{:keys [title slug]}]
+                                           {:title title
+                                            :url (page-url slug)})))))})]
+  (provider-links example-provider))
+
+;; => (nil :deprecated :forever-incomplete :noindex :ready-for-comments :wtf-is-this)
+
+(let [links-url "https://play.teod.eu/index/big.edn"
+      example-provider (quote {:fn (fn []
+
+                                     (let [data [["Simple Made Easy" "SxdOUGdseq4"]
+                                                 ["The Language of the System" "ROor6_NGIWU"]
+                                                 ["Maybe Not" "YR5WdGrpoug"]
+                                                 ["Design, Composition, and Performance" "QCwqnjxqfmY"]
+                                                 ["Design in Practice" "c5QF2HjHLSE"]
+                                                 ["The Value of Values" "-I-VpPMzG7c"]]]
+                                       (for [[title url] data]
+                                         {:title title :url url})))})]
+  (provider-links example-provider))
+
 (defn url->inferred-slug [url]
   (-> url
       (str/split #"/")
@@ -99,6 +149,8 @@
 (comment
   (add-provider "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/rich-hickey-greates-hits.edn")
   (providers))
+
+;; lemex roulette --browse -- get dropped into a random place
 
 ;; to install this file with bbin:
 ;;
