@@ -1,6 +1,6 @@
 ;; warning: requires clojure.data.json to be present
 {:fn (fn []
-       (require 'clojure.data.json)
+       (require (quote clojure.data.json))
        (->> (:links (clojure.data.json/read-str (slurp "https://iterbart.app.iterate.no/data/links.json") :key-fn keyword))
             (map (fn [l]
                    {:url (:href l)
