@@ -2,7 +2,8 @@
   (:require
    [babashka.process]
    [clojure.string :as str]
-   [babashka.fs :as fs]))
+   [babashka.fs :as fs]
+   [clojure.edn :as edn]))
 
 ;; link management
 
@@ -61,3 +62,37 @@
                                        (for [[title url] data]
                                          {:title title :url url})))})]
   (provider-links example-provider))
+
+(defn url->inferred-slug [url]
+  (-> url
+      (str/split #"/")
+      last
+      (str/replace #"\.edn$" "")))
+
+(defn providers-path []
+  (fs/file (fs/xdg-config-home "teodorlu.lemex.experimental")
+           "providers.d"))
+
+(defn provider-path [slug]
+  (fs/file (providers-path)
+           (str slug ".edn")))
+
+
+(->>
+ (fs/list-dir (providers-path))
+ (map #(-> {:slug (str/replace (fs/file-name %) #"\.edn$" "")})))
+
+(defn providers []
+  (->>
+   (fs/list-dir (providers-path))
+   (map #(-> {:slug (str/replace (fs/file-name %) #"\.edn$" "")}))))
+
+
+(defn add-provider [url]
+  (fs/create-dirs (providers-path))
+  (let [slug (url->inferred-slug url)]
+    (spit (provider-path slug) (slurp url))))
+
+(comment
+  (add-provider "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/rich-hickey-greates-hits.edn")
+  (providers))
