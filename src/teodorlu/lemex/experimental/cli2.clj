@@ -46,3 +46,18 @@
 ;; lemex provider add URL_OR_FILE
 
 (fs/xdg-config-home "teodorlu.lemex.experimental")
+
+(defn provider-links [provider]
+  (when-let [provider-fn (:fn provider)]
+    ((eval provider-fn))))
+
+(let [example-provider (quote {:fn (fn []
+                                     (let [data [["Simple Made Easy" "SxdOUGdseq4"]
+                                                 ["The Language of the System" "ROor6_NGIWU"]
+                                                 ["Maybe Not" "YR5WdGrpoug"]
+                                                 ["Design, Composition, and Performance" "QCwqnjxqfmY"]
+                                                 ["Design in Practice" "c5QF2HjHLSE"]
+                                                 ["The Value of Values" "-I-VpPMzG7c"]]]
+                                       (for [[title url] data]
+                                         {:title title :url url})))})]
+  (provider-links example-provider))
