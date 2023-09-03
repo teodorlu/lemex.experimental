@@ -1,6 +1,6 @@
 # `lemex.experimental`: A toolkit for building your own little memex with Babashka
 
-Stability: experimental.
+## Stability: experimental.
 
 I'm currently working on this toolkit while I'm working on my memexes (one public, more private).
 If you want to help explore, then great! Get in touch.
