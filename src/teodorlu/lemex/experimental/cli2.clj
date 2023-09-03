@@ -100,6 +100,12 @@
        shuffle
        first
        provider-links2)
+
+  (providers)
+
+  (provider-links2
+   (second
+    (providers)))
   )
 
 ;; lemex roulette --browse -- get dropped into a random place
