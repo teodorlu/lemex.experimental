@@ -1,9 +1,10 @@
 (ns teodorlu.lemex.experimental.cli2
   (:require
-   [babashka.process]
-   [clojure.string :as str]
    [babashka.fs :as fs]
-   [clojure.edn :as edn]))
+   [babashka.process]
+   [clojure.data.json :as json]
+   [clojure.edn :as edn]
+   [clojure.string :as str]))
 
 ;; link management
 
@@ -75,14 +76,25 @@
     (when (fs/exists? path)
       (when-let [provider-fn (:fn (edn/read-string (slurp path)))] ((eval provider-fn))))))
 
+
+{:fn (fn []
+       (->> (:links (clojure.data.json/read-str (slurp "https://iterbart.app.iterate.no/data/links.json") :key-fn keyword))
+            (map (fn [l]
+                   {:url (:href l)
+                    :title (:title l)}))))}
+
 (defn -main [& args]
   (println "lemex"))
 
 (comment
   (add-provider "rich-hickey-greatest-hits"
                 "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/rich-hickey-greatest-hits.edn")
+
   (add-provider "play.teod.eu"
                 "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/play.teod.eu.edn")
+
+  (add-provider "iterbart"
+                "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/iterbart.edn")
 
   (->> (providers)
        shuffle
