@@ -93,6 +93,13 @@
   (let [slug (url->inferred-slug url)]
     (spit (provider-path slug) (slurp url))))
 
+(defn -main [& args]
+  (println "lemex"))
+
 (comment
   (add-provider "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/rich-hickey-greates-hits.edn")
   (providers))
+
+;; to install this file with bbin:
+;;
+;;   bbin install . --as lemex --main-opts '["-m" "teodorlu.lemex.experimental.cli2"]'
