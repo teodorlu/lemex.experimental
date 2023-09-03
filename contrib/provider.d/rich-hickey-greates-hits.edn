@@ -1,0 +1,9 @@
+{:fn (fn []
+       (let [data [["Simple Made Easy" "SxdOUGdseq4"]
+                   ["The Language of the System" "ROor6_NGIWU"]
+                   ["Maybe Not" "YR5WdGrpoug"]
+                   ["Design, Composition, and Performance" "QCwqnjxqfmY"]
+                   ["Design in Practice" "c5QF2HjHLSE"]
+                   ["The Value of Values" "-I-VpPMzG7c"]]]
+         (for [[title url] data]
+           {:title title :url url})))}
