@@ -1,6 +1,6 @@
 ;; https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/play.teod.eu.edn
 {:fn
- (fn []
+ (fn [_]
    (let [baseurl "https://play.teod.eu"
          index-url (str baseurl "/index/big.edn")
          page-url (fn [slug]

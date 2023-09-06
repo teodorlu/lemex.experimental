@@ -1,6 +1,6 @@
 ;; warning: requires clojure.data.json to be loaded
 ;; warning: does not seem to work yet, problems with clojure.data.json I think
-{:fn (fn []
+{:fn (fn [_]
        (->> (:links (clojure.data.json/read-str (slurp "https://iterbart.app.iterate.no/data/links.json") :key-fn keyword))
             (map (fn [l]
                    {:url (:href l)

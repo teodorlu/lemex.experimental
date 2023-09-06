@@ -66,35 +66,53 @@
    (fs/list-dir (providers-path))
    (map #(-> {:slug (str/replace (fs/file-name %) #"\.edn$" "")}))))
 
-
-(defn add-provider [slug url]
+(defn add-provider [slug slurpable]
   (fs/create-dirs (providers-path))
-  (spit (provider-path slug) (slurp url)))
+  (spit (provider-path slug) (slurp slurpable)))
 
-(defn provider-links2 [provider]
-  (let [path (provider-path (:slug provider))]
-    (when (fs/exists? path)
-      (when-let [provider-fn (:fn (edn/read-string (slurp path)))] ((eval provider-fn))))))
+(defn provider-links2
+  ([provider] (provider-links2 provider {}))
+  ([provider env]
+   (let [path (provider-path (:slug provider))]
+     (when (fs/exists? path)
+       (when-let [provider-fn (:fn (edn/read-string (slurp path)))]
+         ((eval provider-fn) env))))))
 
+(let [f
+      (fn [env]
+        (->> (:links ((get env 'clojure.data.json/read-str) (slurp "https://iterbart.app.iterate.no/data/links.json") :key-fn keyword))
+             (map (fn [l]
+                    {:url (:href l)
+                     :title (:title l)}))))]
+  (f {'clojure.data.json/read-str clojure.data.json/read-str}))
 
-{:fn (fn []
-       (->> (:links (clojure.data.json/read-str (slurp "https://iterbart.app.iterate.no/data/links.json") :key-fn keyword))
-            (map (fn [l]
-                   {:url (:href l)
-                    :title (:title l)}))))}
+(->> (:links (clojure.data.json/read-str (slurp "https://iterbart.app.iterate.no/data/links.json") :key-fn keyword))
+     (map (fn [l]
+            {:url (:href l)
+             :title (:title l)})))
 
 (defn -main [& args]
   (println "lemex"))
 
+(def provider-rich-hickey-greatest-hits {:slug "rich-hickey-greatest-hits"})
+(def provider-iterbart {:slug "iterbart"})
+(def provider-play-teod-eu {:slug "play.teod.eu"})
+
 (comment
-  (add-provider "rich-hickey-greatest-hits"
-                "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/rich-hickey-greatest-hits.edn")
+  (defn github-raw-path [path] (str "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/" path))
 
-  (add-provider "play.teod.eu"
-                "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/play.teod.eu.edn")
+  (add-provider "rich-hickey-greatest-hits" (github-raw-path "contrib/provider.d/rich-hickey-greatest-hits.edn"))
+  (add-provider "rich-hickey-greatest-hits" "contrib/provider.d/rich-hickey-greatest-hits.edn")
 
-  (add-provider "iterbart"
-                "https://raw.githubusercontent.com/teodorlu/lemex.experimental/master/contrib/provider.d/iterbart.edn")
+  (add-provider "play.teod.eu" (github-raw-path "contrib/provider.d/play.teod.eu.edn"))
+  (add-provider "play.teod.eu" "contrib/provider.d/play.teod.eu.edn")
+
+  (add-provider "iterbart" (github-raw-path "contrib/provider.d/iterbart.edn"))
+  (add-provider "iterbart" "contrib/provider.d/iterbart.edn")
+
+  (provider-links2 provider-rich-hickey-greatest-hits)
+  (provider-links2 provider-iterbart)
+  (provider-links2 provider-play-teod-eu)
 
   (->> (providers)
        shuffle
@@ -102,6 +120,7 @@
        provider-links2)
 
   (providers)
+  ;; => ({:slug "rich-hickey-greatest-hits"} {:slug "iterbart"} {:slug "play.teod.eu"})
 
   (provider-links2
    (second
